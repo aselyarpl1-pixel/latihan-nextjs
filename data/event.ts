@@ -70,6 +70,16 @@ export const events: Event[] = [
     kuota: 60,
     terisi: 18,
   },
+  {
+    id: 7,
+    judul: "Festival Musik Nusantara",
+    kategori: "Musik",
+    tanggal: "2026-12-20",
+    lokasi: "Malang",
+    harga: 75000,
+    kuota: 100,
+    terisi: 30,
+  },
 ];
 
 export function rupiah(n: number) {
