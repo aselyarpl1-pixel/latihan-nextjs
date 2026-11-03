@@ -1,19 +1,12 @@
 import { notFound } from "next/navigation";
 import { events, rupiah } from "@/data/events";
-import Link from "next/link";
+import FormPesan from "@/components/FormPesan";
 
-export default async function Detail({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function Detail({ params }: PageProps<"/event/[id]">) {
   const { id } = await params;
-
   const event = events.find((e) => e.id === Number(id));
 
-  if (!event) {
-    notFound();
-  }
+  if (!event) notFound();
 
   const sisa = event.kuota - event.terisi;
 
@@ -35,12 +28,7 @@ export default async function Detail({
         Sisa {sisa} dari {event.kuota} tiket
       </p>
 
-      <Link
-        href="/"
-        className="mt-4 inline-block text-blue-600 hover:underline"
-      >
-        Kembali ke katalog
-      </Link>
+      <FormPesan event={event} />
     </article>
   );
 }
