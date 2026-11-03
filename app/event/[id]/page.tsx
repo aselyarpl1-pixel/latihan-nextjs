@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { events, rupiah } from "@/data/event";
+import { events, rupiah } from "@/data/events";
 import Link from "next/link";
 
 export default async function Detail({

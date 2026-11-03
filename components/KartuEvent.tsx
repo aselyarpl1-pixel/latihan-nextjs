@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { rupiah, type Event } from "@/data/event";
+import { rupiah, type Event } from "@/data/events";
 
 export default function KartuEvent({ event }: { event: Event }) {
   const sisa = event.kuota - event.terisi;
