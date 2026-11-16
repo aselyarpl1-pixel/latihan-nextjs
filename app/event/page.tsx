@@ -1,13 +1,29 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+
 import { ambilEvents } from "@/data/ambil";
 import KatalogInteraktif from "@/components/KatalogInteraktif";
 
-export default async function Katalog() {
+export const metadata: Metadata = {
+  title: "Katalog Event",
+};
+
+async function DaftarEvent() {
   const events = await ambilEvents();
 
+  return <KatalogInteraktif events={events} />;
+}
+
+export default function HalamanEvent() {
   return (
-    <div>
-      <h1 className="mb-4 text-2xl font-bold">Katalog Event</h1>
-      <KatalogInteraktif events={events} />
-    </div>
+    <Suspense
+      fallback={
+        <p className="py-10 text-center text-slate-500">
+          Memuat daftar event...
+        </p>
+      }
+    >
+      <DaftarEvent />
+    </Suspense>
   );
 }

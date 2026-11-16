@@ -1,5 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
+
 import { rupiah, type Event } from "@/data/events";
+import TombolFavorit from "@/components/TombolFavorit";
 
 export default function KartuEvent({ event }: { event: Event }) {
   const sisa = event.kuota - event.terisi;
@@ -7,15 +10,30 @@ export default function KartuEvent({ event }: { event: Event }) {
 
   return (
     <div className="rounded-xl border bg-white p-4 shadow-sm">
-      <span className="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
-        {event.kategori}
-      </span>
+      <Image
+        src={event.gambar ?? "/img/default.png"}
+        alt={event.judul}
+        width={400}
+        height={210}
+        loading="eager"
+        className="mb-3 rounded-lg"
+      />
 
-      {laris && (
-        <span className="ml-2 rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-          Laris
-        </span>
-      )}
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div>
+          <span className="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
+            {event.kategori}
+          </span>
+
+          {laris && (
+            <span className="ml-2 rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+              Laris
+            </span>
+          )}
+        </div>
+
+        <TombolFavorit id={event.id} />
+      </div>
 
       <h3 className="mt-2 text-lg font-semibold">{event.judul}</h3>
 
