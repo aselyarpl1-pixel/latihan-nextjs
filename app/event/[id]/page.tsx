@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import Image from "next/image";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 import { events, rupiah } from "@/data/events";
@@ -45,6 +46,14 @@ export default async function Detail({ params }: PageProps<"/event/[id]">) {
 
   return (
     <article className="rounded-xl border bg-white p-6">
+      {/* Tombol kembali ke katalog */}
+      <Link
+        href="/event"
+        className="mb-5 inline-block rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+      >
+        ← Kembali ke Katalog
+      </Link>
+
       <div className="relative mb-4 aspect-40/21 w-full">
         <Image
           src={event.gambar ?? "/img/default.png"}
