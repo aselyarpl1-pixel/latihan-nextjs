@@ -1,30 +1,29 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { cookies } from "next/headers";
-
-import { batalkanPesanan } from "@/app/actions";
-import { pesanan } from "@/data/pesanan";
+import Link from "next/link";
+import { ambilPesanan } from "@/data/ambil";
 import { rupiah } from "@/data/events";
+import { batalkanPesanan } from "@/app/actions";
 
 export const metadata: Metadata = {
   title: "Daftar Pesanan",
 };
 
 export default async function HalamanPesanan() {
-  // Membaca nama dari cookie
-  const nama = (await cookies()).get("nama")?.value ?? "";
+  const pesanan = await ambilPesanan();
+  const namaSaya = (await cookies()).get("nama")?.value ?? "";
 
-  const totalTiket = pesanan.reduce((t, p) => t + p.jumlah, 0);
-  const pendapatan = pesanan.reduce((t, p) => t + p.total, 0);
+  const totalTiket = pesanan.reduce((total, p) => total + p.jumlah, 0);
+
+  const pendapatan = pesanan.reduce((total, p) => total + p.total, 0);
 
   return (
     <div>
       <h1 className="mb-2 text-2xl font-bold">Daftar Pesanan</h1>
 
-      {/* Sapaan berdasarkan cookie */}
-      {nama && (
-        <p className="mb-4 text-slate-600">
-          Halo, <span className="font-semibold">{nama}</span>!
+      {namaSaya && (
+        <p className="mb-2 text-slate-600">
+          Halo, {namaSaya}! Pesananmu ditandai &quot;Kamu&quot;.
         </p>
       )}
 
@@ -50,7 +49,8 @@ export default async function HalamanPesanan() {
                 <th className="p-2">Pemesan</th>
                 <th className="p-2">Tiket</th>
                 <th className="p-2">Total</th>
-                <th className="p-2">Aksi</th>
+                <th className="p-2">Waktu Pemesanan</th>
+                <th className="p-2"></th>
               </tr>
             </thead>
 
@@ -58,27 +58,34 @@ export default async function HalamanPesanan() {
               {pesanan.map((p) => (
                 <tr key={p.nomor} className="border-t">
                   <td className="p-2">{p.nomor}</td>
-                  <td className="p-2">{p.judul}</td>
+
+                  <td className="p-2">
+                    {p.events?.judul ?? "(event dihapus)"}
+                  </td>
 
                   <td className="p-2">
                     {p.nama}
 
-                    {/* Label Kamu */}
-                    {nama && p.nama === nama && (
-                      <span className="ml-2 rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">
+                    {p.nama === namaSaya && (
+                      <span className="ml-2 rounded bg-green-100 px-2 py-0.5 text-xs text-green-700">
                         Kamu
                       </span>
                     )}
                   </td>
 
                   <td className="p-2">{p.jumlah}</td>
+
                   <td className="p-2">{rupiah(p.total)}</td>
 
-                  {/* Tombol Batalkan hanya untuk pesanan milik sendiri */}
                   <td className="p-2">
-                    {nama && p.nama === nama && (
+                    {new Date(p.dibuat).toLocaleString("id-ID")}
+                  </td>
+
+                  <td className="p-2">
+                    {p.nama === namaSaya && (
                       <form action={batalkanPesanan}>
                         <input type="hidden" name="nomor" value={p.nomor} />
+
                         <button className="text-red-600 underline">
                           Batalkan
                         </button>

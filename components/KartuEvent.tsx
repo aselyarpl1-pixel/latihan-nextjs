@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { events, rupiah, type Event } from "@/data/events";
+import { rupiah, type Event } from "@/data/events";
 import TombolFavorit from "@/components/TombolFavorit";
 
 export default function KartuEvent({ event }: { event: Event }) {
@@ -15,7 +15,7 @@ export default function KartuEvent({ event }: { event: Event }) {
         alt={event.judul}
         width={400}
         height={210}
-        loading={event.id === events[0]?.id ? "eager" : "lazy"}
+        loading="lazy"
         className="mb-3 rounded-lg"
       />
 

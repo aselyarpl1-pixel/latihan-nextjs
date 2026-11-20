@@ -1,12 +1,11 @@
 import { Suspense } from "react";
+import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
-import Image from "next/image";
-import Link from "next/link";
-import type { Metadata } from "next";
 
-import { events, rupiah } from "@/data/events";
-import { ambilEvent } from "@/data/ambil";
+import { rupiah } from "@/data/events";
+import { ambilEvent, hitungPesanan } from "@/data/ambil";
 
 import FormPesan from "@/components/FormPesan";
 import TombolFavorit from "@/components/TombolFavorit";
@@ -16,13 +15,10 @@ export async function generateMetadata({
   params,
 }: PageProps<"/event/[id]">): Promise<Metadata> {
   const { id } = await params;
-
-  const event = events.find((e) => e.id === Number(id));
+  const event = await ambilEvent(Number(id));
 
   if (!event) {
-    return {
-      title: "Event tidak ditemukan",
-    };
+    return { title: "Event tidak ditemukan" };
   }
 
   return {
@@ -40,20 +36,14 @@ export default async function Detail({ params }: PageProps<"/event/[id]">) {
     notFound();
   }
 
+  const statistik = await hitungPesanan(event.id);
+
   const sisa = event.kuota - event.terisi;
 
   const namaAwal = (await cookies()).get("nama")?.value ?? "";
 
   return (
     <article className="rounded-xl border bg-white p-6">
-      {/* Tombol kembali ke katalog */}
-      <Link
-        href="/event"
-        className="mb-5 inline-block rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-      >
-        ← Kembali ke Katalog
-      </Link>
-
       <div className="relative mb-4 aspect-40/21 w-full">
         <Image
           src={event.gambar ?? "/img/default.png"}
@@ -80,6 +70,25 @@ export default async function Detail({ params }: PageProps<"/event/[id]">) {
       <p className="text-slate-600">
         Sisa {sisa} dari {event.kuota} tiket
       </p>
+
+      {/* Statistik pesanan */}
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="rounded-lg bg-blue-50 p-4">
+          <p className="text-sm text-slate-600">Jumlah Pesanan</p>
+
+          <p className="mt-1 text-2xl font-bold text-blue-700">
+            {statistik.jumlahPesanan}
+          </p>
+        </div>
+
+        <div className="rounded-lg bg-blue-50 p-4">
+          <p className="text-sm text-slate-600">Jumlah Tiket Dipesan</p>
+
+          <p className="mt-1 text-2xl font-bold text-blue-700">
+            {statistik.jumlahTiket}
+          </p>
+        </div>
+      </div>
 
       <TombolFavorit id={event.id} />
 
